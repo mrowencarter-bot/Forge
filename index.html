@@ -10,19 +10,23 @@ window.addEventListener("load", function() {
 
 
 
-  document.addEventListener("click", function(e) {
+  document.body.addEventListener("click", function(e) {
 
 
 
-    const btn = e.target.closest("button,a");
+    const clicked = e.target.closest("button, a, div");
 
 
 
-    if (btn && btn.textContent.toUpperCase().includes("GET PROGRAM")) {
+    if (clicked && clicked.innerText && clicked.innerText.toUpperCase().includes("GET PROGRAM")) {
 
 
 
-      window.open("Forged.pdf", "_blank");
+      e.preventDefault();
+
+
+
+      window.location.href = "/Forge/Forged.pdf";
 
 
 
@@ -30,7 +34,7 @@ window.addEventListener("load", function() {
 
 
 
-  });
+  }, true);
 
 
 
@@ -39,4 +43,3 @@ window.addEventListener("load", function() {
 
 
 </script>
-
