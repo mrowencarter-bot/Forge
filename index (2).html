@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORGED — Discipline. Strength. Dominance.</title>
+<meta name="description" content="FORGED is a no-excuses fitness and self-improvement system: strength training, nutrition, conditioning, and recovery built for men who refuse to settle.">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --charcoal: #141414;
+    --charcoal2: #1b1b1b;
+    --red: #e0291f;
+    --red-bright: #ff3a2e;
+    --red-dim: #8c1c16;
+    --white: #f5f5f5;
+    --gray: #8a8a8a;
+    --gray-dim: #555;
+    --line: #222;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Arial', 'Helvetica Neue', sans-serif;
+    line-height: 1.5;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    z-index: 10;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; letter-spacing: 1px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; }
+
+  nav a { color: var(--gray); text-decoration: none; margin-left: 32px; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; }
+  nav a:hover, nav a:focus-visible { color: var(--white); }
+
+  main { max-width: 1080px; margin: 0 auto; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 24px 80px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .hero-rule { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .hero-rule .bar { width: 40px; height: 1px; background: var(--red); }
+  .hero-rule span { color: var(--red); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+
+  h1.brand {
+    font-size: clamp(3.5rem, 14vw, 8rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 0.95;
+    margin-bottom: 4px;
+  }
+
+  .hero-tagline {
+    font-size: clamp(1rem, 2.6vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+
+  .hero-desc { color: var(--gray); font-size: 17px; max-width: 540px; margin-bottom: 36px; }
+
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 16px 32px;
+    transition: background 0.15s ease;
+  }
+  .btn:hover, .btn:focus-visible { background: var(--red-bright); }
+
+  .btn-ghost { background: none; border: 1px solid var(--line); color: var(--white); }
+  .btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--red); background: none; }
+
+  /* FOUNDER */
+  .section { padding: 80px 24px; border-bottom: 1px solid var(--line); }
+  .section-eyebrow { color: var(--red); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .section-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: -0.5px; line-height: 1; margin-bottom: 24px; }
+
+  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .founder-grid p { color: var(--gray); font-size: 16px; margin-bottom: 16px; }
+  .founder-grid p:last-child { margin-bottom: 0; }
+  .founder-sig { color: var(--white); font-weight: 900; font-size: 18px; margin-top: 8px; }
+  .founder-sig span { display: block; color: var(--gray); font-weight: 400; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* THE SYSTEM */
+  .system-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .system-card {
+    background: var(--charcoal); border: 1px solid var(--line); padding: 28px; position: relative;
+  }
+  .system-card.available { border-color: var(--red-dim); }
+  .system-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+  .system-card p { color: var(--gray); font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 4px 10px; margin-bottom: 12px;
+  }
+  .badge.live { background: var(--red); color: var(--white); }
+  .badge.soon { background: var(--charcoal2); color: var(--gray); border: 1px solid var(--line); }
+  .system-card a.card-link { color: var(--red); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; }
+  .system-card a.card-link:hover { color: var(--red-bright); }
+
+  /* FREE TOOLS */
+  .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .tool-card { background: var(--charcoal); border: 1px solid var(--line); padding: 32px; }
+  .tool-card h3 { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+  .tool-card p { color: var(--gray); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+
+  /* RULES STRIP */
+  .rules-strip { background: var(--charcoal); padding: 60px 24px; border-bottom: 1px solid var(--line); }
+  .rules-strip .section-eyebrow, .rules-strip .section-title { max-width: 1032px; margin-left: auto; margin-right: auto; }
+  .rules-list { max-width: 1032px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px; }
+  .rules-list div { display: flex; gap: 12px; align-items: baseline; font-size: 15px; color: var(--gray); padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .rules-list div b { color: var(--red); font-weight: 900; }
+
+  /* FINAL CTA */
+  .final-cta { padding: 90px 24px; text-align: center; }
+  .final-cta h2 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; line-height: 1; margin-bottom: 16px; }
+  .final-cta h2 .red { color: var(--red); }
+  .final-cta p { color: var(--gray); margin-bottom: 32px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+  footer { border-top: 1px solid var(--line); padding: 56px 24px 28px; }
+  .footer-inner { max-width: 1080px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; margin-bottom: 40px; }
+  .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .footer-brand span { font-weight: 900; font-size: 20px; letter-spacing: 1px; }
+  .footer-grid p { color: var(--gray-dim); font-size: 13px; max-width: 320px; line-height: 1.6; }
+  .footer-links h4 { font-size: 12px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .footer-links a { display: block; color: var(--gray); text-decoration: none; font-size: 14px; margin-bottom: 10px; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; }
+  .footer-bottom p { color: var(--gray-dim); font-size: 12px; letter-spacing: 0.5px; }
+  .footer-bottom .tagline { color: var(--gray-dim); font-size: 13px; font-weight: 900; letter-spacing: 1px; }
+
+  @media (max-width: 700px) {
+    header { padding: 18px 20px; }
+    nav a { margin-left: 18px; font-size: 12px; }
+    .hero { padding: 64px 20px 56px; }
+    .section { padding: 56px 20px; }
+    .founder-grid, .system-grid, .tools-grid, .footer-grid, .rules-list { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-mark">F</div>FORGED</div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/programs">Programs</a>
+    <a href="#tools">Free Tools</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-rule"><div class="bar"></div><span>The Brotherhood of the Iron</span></div>
+    <h1 class="brand">FORGED</h1>
+    <p class="hero-tagline">Discipline. Strength. Dominance.</p>
+    <p class="hero-desc">Most people want results. Few are willing to earn them. FORGED is a complete system for building muscle, losing fat without losing it, and training your mind alongside your body — built by someone who's actually done it, not a marketing team.</p>
+    <div class="hero-ctas">
+      <a href="/programs" class="btn">View Programs</a>
+      <a href="#tools" class="btn btn-ghost">Try Free Tools</a>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="section">
+    <div class="section-eyebrow">Why Forged Exists</div>
+    <div class="founder-grid">
+      <div>
+        <h2 class="section-title">Built By Someone<br>Who Started Skinny.</h2>
+      </div>
+      <div>
+        <p>My name is Owen, and lifting weights completely changed my life. Like a lot of people, I started as a skinny beginner with little understanding of how muscle growth actually worked.</p>
+        <p>Over time I learned the principles that consistently produce results — proper training, progressive overload, recovery, and nutrition — and built Forged to simplify those concepts into a clear roadmap, instead of the conflicting advice and unrealistic expectations most fitness content overwhelms beginners with.</p>
+        <p class="founder-sig">— Owen<span>Founder, Forged</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE SYSTEM -->
+  <section class="section">
+    <div class="section-eyebrow">The Forged System</div>
+    <h2 class="section-title">Four Parts.<br>One Complete Physique.</h2>
+    <div class="system-grid">
+      <div class="system-card available">
+        <span class="badge live">Available Now</span>
+        <h3>Iron Foundation</h3>
+        <p>The strength training system. Flexible-duration muscle building for 1–6 days a week, with full splits, exercise alternatives, and double progression built in.</p>
+        <a class="card-link" href="/programs">View Program →</a>
+      </div>
+      <div class="system-card">
+        <span class="badge soon">Coming Soon</span>
+        <h3>Forged Diet</h3>
+        <p>The nutrition system. Lose fat without losing muscle — protein-first, whole-food, no crash dieting. Try the free tracker below while the full guide is finalized.</p>
+        <a class="card-link" href="#tools">Try Free Tracker →</a>
+      </div>
+      <div class="system-card">
+        <span class="badge soon">Coming Soon</span>
+        <h3>Warrior Conditioning</h3>
+        <p>The conditioning system. Cardio and fat-loss work designed to strip fat without burning away the muscle you've built.</p>
+      </div>
+      <div class="system-card">
+        <span class="badge soon">Coming Soon</span>
+        <h3>Forged Sleep</h3>
+        <p>The recovery system. Maximize sleep quality and restoration — because muscle grows during recovery, not in the gym.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREE TOOLS -->
+  <section class="section" id="tools">
+    <div class="section-eyebrow">Free Tools</div>
+    <h2 class="section-title">Track It Or<br>You're Guessing.</h2>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="badge live">Free</span>
+        <h3>Iron Foundation Tracker</h3>
+        <p>Log every set against the real program — Full Body, Upper/Lower, or Push/Pull/Legs — with double progression built in.</p>
+        <a class="btn" href="/iron-foundation-tracker">Open Tracker</a>
+      </div>
+      <div class="tool-card">
+        <span class="badge live">Free</span>
+        <h3>Forged Fuel Tracker</h3>
+        <p>Hit your protein, water, and steps targets. Track weekly bodyweight and waist. No fake macro math — just the habits that work.</p>
+        <a class="btn" href="/forged-fuel-tracker">Open Tracker</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 RULES -->
+  <section class="rules-strip">
+    <div class="section-eyebrow">The Standard</div>
+    <h2 class="section-title">Six Rules.<br>No Exceptions.</h2>
+    <div class="rules-list">
+      <div><b>01</b> Eat protein with every meal</div>
+      <div><b>02</b> Stay in a controlled calorie deficit</div>
+      <div><b>03</b> Train with resistance regularly</div>
+      <div><b>04</b> Stay active daily — steps and movement</div>
+      <div><b>05</b> Sleep consistently</div>
+      <div><b>06</b> Be consistent for weeks, not days</div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <h2>READY TO STOP<br><span class="red">BEING AVERAGE?</span></h2>
+    <p>Start with Iron Foundation, or open a free tracker and see where you actually stand today.</p>
+    <a href="/programs" class="btn">Start Training Now</a>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand"><div class="logo-mark">F</div><span>FORGED</span></div>
+        <p>Built for the few who understand that greatness is not given — it is forged through discipline, sacrifice, and relentless effort.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navigate</h4>
+        <a href="/">Home</a>
+        <a href="/programs">Programs</a>
+        <a href="/iron-foundation-tracker">Iron Foundation Tracker</a>
+        <a href="/forged-fuel-tracker">Forged Fuel Tracker</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 FORGED. ALL RIGHTS RESERVED.</p>
+      <p class="tagline">DISCIPLINE IS FREEDOM</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
