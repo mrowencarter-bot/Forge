@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -63,14 +63,11 @@
     aspect-ratio: 1 / 1;
     background: var(--charcoal2);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--gray);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
+  .card-image img { width: 50%; height: 100%; object-fit: cover; }
+  .card-image img:first-child { border-right: 1px solid var(--line); }
 
   .card-body { padding: 28px; display: flex; flex-direction: column; flex-grow: 1; }
 
@@ -141,7 +138,10 @@
   <div class="grid">
 
     <div class="card live">
-      <div class="card-image">Product Photo Coming Soon</div>
+      <div class="card-image">
+        <img src="/iron-tee-front.png" alt="FORGED Iron Tee front design">
+        <img src="/iron-tee-back.png" alt="FORGED Iron Tee back design">
+      </div>
       <div class="card-body">
         <span class="tagline">Long Sleeve Tee</span>
         <h2>The Iron Tee</h2>
