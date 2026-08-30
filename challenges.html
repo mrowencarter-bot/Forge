@@ -46,8 +46,8 @@
   .rule-card .n{font-family:'JetBrains Mono',monospace; color:var(--brass); font-size:12px; font-weight:700; margin-bottom:8px;}
   .rule-card p{font-size:14px; color:var(--bone); line-height:1.5;}
   .days{display:flex; flex-direction:column; gap:12px;}
-  .day-row{display:flex; gap:20px; align-items:center; padding:16px 0; border-bottom:1px solid var(--steel);}
-  .day-row .d{font-family:'Bebas Neue',sans-serif; font-size:30px; color:var(--ember); width:70px; flex-shrink:0; text-align:center;}
+  .day-row{display:grid; grid-template-columns:70px 1fr; gap:20px; align-items:start; padding:16px 0; border-bottom:1px solid var(--steel);}
+  .day-row .d{font-family:'Bebas Neue',sans-serif; font-size:30px; color:var(--ember); text-align:left;}
   .day-row .t{font-weight:700; font-size:15px; margin-bottom:4px;}
   .day-row .desc{font-size:13px; color:var(--slag); line-height:1.5;}
   footer{padding:40px 0; text-align:center; color:var(--slag); font-size:12px; font-family:'JetBrains Mono',monospace; border-top:1px solid var(--steel);}
