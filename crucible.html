@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>FORGED CRUCIBLE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+  :root{
+    --void:#0a0a0b;
+    --iron:#151517;
+    --surface:#1c1c1f;
+    --steel:#2a2a2e;
+    --steel-light:#3d3d43;
+    --ember:#ff4517;
+    --ember-dim:#8f2a0f;
+    --ember-glow:rgba(255,69,23,0.35);
+    --temper:#3e7cb1;
+    --temper-dim:rgba(62,124,177,0.18);
+    --brass:#c9a227;
+    --bone:#edebe6;
+    --slag:#8a8a90;
+    --slag-dark:#525257;
+    --danger-line: linear-gradient(90deg, transparent, #ff4517, #ffb347, #ff4517, transparent);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--void); color:var(--bone); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
+  #root{min-height:100vh;}
+  ::selection{background:var(--ember); color:var(--void);}
+  ::-webkit-scrollbar{width:8px; height:8px;}
+  ::-webkit-scrollbar-track{background:var(--void);}
+  ::-webkit-scrollbar-thumb{background:var(--steel-light); border-radius:0;}
+  a,button{font-family:inherit;}
+  button{cursor:pointer;}
+  .display{font-family:'Bebas Neue', sans-serif; letter-spacing:0.02em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.18em; font-size:11px; color:var(--slag); font-weight:600;}
+  .app-shell{max-width:520px; margin:0 auto; min-height:100vh; background:var(--void); position:relative; border-left:1px solid var(--steel); border-right:1px solid var(--steel); display:flex; flex-direction:column;}
+  @media(min-width:521px){ .app-shell{ box-shadow: 0 0 120px rgba(0,0,0,0.6); } }
+  .main-scroll{flex:1; overflow-y:auto; padding-bottom:96px;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,10,11,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--steel); padding:16px 20px;}
+  .btn{border:none; border-radius:2px; padding:14px 20px; font-weight:700; font-size:14px; letter-spacing:0.03em; transition:transform .12s ease, filter .12s ease;}
+  .btn:active{transform:scale(0.98);}
+  .btn:disabled{opacity:0.5; pointer-events:none;}
+  .btn-primary{background:var(--ember); color:var(--void);}
+  .btn-primary:hover{filter:brightness(1.1);}
+  .btn-outline{background:transparent; border:1px solid var(--steel-light); color:var(--bone);}
+  .btn-outline:hover{border-color:var(--ember); color:var(--ember);}
+  .btn-ghost{background:transparent; border:none; color:var(--slag);}
+  .card{background:var(--surface); border:1px solid var(--steel); border-radius:2px;}
+  .heat-bar-track{height:6px; background:var(--steel); position:relative; overflow:hidden; border-radius:1px;}
+  .heat-bar-fill{height:100%; background:linear-gradient(90deg, var(--temper), var(--ember)); transition:width .4s ease;}
+  .seared{position:relative; color:var(--slag-dark) !important;}
+  .seared::after{
+    content:''; position:absolute; left:-4%; right:-4%; top:50%; height:2px;
+    background:var(--danger-line); transform:translateY(-50%);
+    box-shadow:0 0 8px 1px var(--ember-glow);
+  }
+  .status-dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .nav-tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 2px 12px; background:none; border:none; color:var(--slag);}
+  .nav-tab.active{color:var(--ember);}
+  .nav-tab .tab-label{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600;}
+  .bottomnav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px; display:flex; background:rgba(12,12,13,0.96); backdrop-filter:blur(10px); border-top:1px solid var(--steel); z-index:30;}
+  .checklist-row{display:flex; align-items:flex-start; gap:12px; padding:16px 0; border-bottom:1px solid var(--steel);}
+  .checkbox{width:22px; height:22px; border:1.5px solid var(--steel-light); flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:2px; margin-top:1px; transition:all .15s ease;}
+  .checkbox.checked{background:var(--ember); border-color:var(--ember);}
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:700; letter-spacing:0.03em; font-family:'JetBrains Mono',monospace; text-transform:uppercase;}
+  .pill-active{background:var(--temper-dim); color:var(--temper);}
+  .pill-eliminated{background:rgba(255,69,23,0.12); color:var(--ember);}
+  .pill-brass{background:rgba(201,162,39,0.15); color:var(--brass);}
+  .fade-in{animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(1800deg);}}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.4;}}
+  @keyframes emberFlicker{0%,100%{opacity:1;} 45%{opacity:0.85;} 55%{opacity:1;} 70%{opacity:0.9;}}
+  .flicker{animation:emberFlicker 2.4s ease-in-out infinite;}
+  input[type=text], input[type=number], textarea, select{
+    width:100%; background:var(--iron); border:1px solid var(--steel-light); color:var(--bone);
+    padding:14px; border-radius:2px; font-size:15px; font-family:'Inter',sans-serif; outline:none;
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--ember);}
+  ::placeholder{color:var(--slag-dark);}
+  label.field-label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--slag); margin-bottom:8px; font-weight:600;}
+  .divider{height:1px; background:var(--steel); border:none;}
+  .avatar{width:40px; height:40px; border-radius:50%; background:var(--steel); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px; flex-shrink:0; border:1px solid var(--steel-light);}
+  .error-text{color:var(--ember); font-size:12px; margin-top:6px; font-family:'JetBrains Mono',monospace;}
+  .invite-code{font-family:'JetBrains Mono',monospace; font-weight:700; letter-spacing:0.12em; font-size:20px; color:var(--ember); user-select:all;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const {useState, useEffect, useRef, useMemo} = React;
+
+/* ---------------------------- STORAGE LAYER ---------------------------- */
+/* Uses window.storage when running inside a Claude artifact (shared across
+   everyone who opens this artifact). Falls back to an in-memory store when
+   that API isn't available (e.g. the raw .html file opened locally), so the
+   app still works for solo testing. */
+
+const memoryStore = {};
+const hasRealStorage = typeof window !== "undefined" && !!window.storage;
+const hasLocalStorage = (() => { try { return typeof window !== "undefined" && !!window.localStorage; } catch(e){ return false; } })();
+
+async function loadShared(key, fallback){
+  if(hasRealStorage){
+    try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : fallback; }catch(e){ return fallback; }
+  }
+  if(hasLocalStorage){
+    try{ const raw = localStorage.getItem("crucible_shared_"+key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
+  }
+  return memoryStore[key] !== undefined ? memoryStore[key] : fallback;
+}
+async function saveShared(key, value){
+  if(hasRealStorage){
+    try{ await window.storage.set(key, JSON.stringify(value), true); }catch(e){ console.error("storage save failed", e); }
+    return;
+  }
+  if(hasLocalStorage){
+    try{ localStorage.setItem("crucible_shared_"+key, JSON.stringify(value)); }catch(e){ console.error("storage save failed", e); }
+    return;
+  }
+  memoryStore[key] = value;
+}
+async function loadPersonal(key, fallback){
+  if(hasRealStorage){
+    try{ const r = await window.storage.get(key, false); return r ? JSON.parse(r.value) : fallback; }catch(e){ return fallback; }
+  }
+  if(hasLocalStorage){
+    try{ const raw = localStorage.getItem("crucible_personal_"+key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
+  }
+  return memoryStore["p_"+key] !== undefined ? memoryStore["p_"+key] : fallback;
+}
+async function savePersonal(key, value){
+  if(hasRealStorage){
+    try{ await window.storage.set(key, JSON.stringify(value), false); }catch(e){ console.error("storage save failed", e); }
+    return;
+  }
+  if(hasLocalStorage){
+    try{ localStorage.setItem("crucible_personal_"+key, JSON.stringify(value)); }catch(e){ console.error("storage save failed", e); }
+    return;
+  }
+  memoryStore["p_"+key] = value;
+}
+
+const CHALLENGE_KEY = "crucible_challenge";
+const PARTICIPANTS_KEY = "crucible_participants";
+const AUDIT_KEY_FOR = (day) => `crucible_audit_day_${day}`;
+const CHECKLIST_KEY_FOR = (pid, day) => `crucible_checklist_${pid}_${day}`;
+const PROOF_KEY_FOR = (pid) => `crucible_proof_${pid}`;
+const ME_KEY = "crucible_me";
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function initials(name){ return (name||"").trim().split(/\s+/).map(w=>w[0]).join("").toUpperCase().slice(0,2) || "?"; }
+function randomCode(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for(let i=0;i<5;i++) s += chars[Math.floor(Math.random()*chars.length)];
+  return "FORGE-" + s;
+}
+function computeDay(challenge){
+  if(!challenge) return 1;
+  const elapsed = Math.floor((Date.now() - challenge.createdAt) / (1000*60*60*24));
+  return Math.min(challenge.totalDays, Math.max(1, elapsed + 1));
+}
+
+/* ---------------------------- STATIC DATA ---------------------------- */
+
+const RULE_GROUPS = [
+  { group: "Phone Discipline", rules: [
+    "No porn or intentionally sexual content",
+    "No social-media scrolling",
+    "No short-form content (TikTok, Reels, Shorts, Spotlight)",
+    "Phone only for productive / necessary purposes",
+    "No video games during the challenge",
+    "No phone in bed",
+    "No recreational phone use — first 60–90 min after waking",
+    "No recreational phone use — final 60–90 min before sleep",
+  ]},
+  { group: "Body", rules: [
+    "Wake up on the first alarm",
+    "Get enough sleep",
+    "Complete scheduled training",
+    "Complete daily outdoor movement",
+    "Daily cool/cold shower (safety exceptions apply)",
+  ]},
+  { group: "Fuel", rules: [
+    "Eat mostly whole, minimally processed food — enough to support training",
+    "Water or milk only — no other drinks",
+  ]},
+  { group: "Mind & Work", rules: [
+    "Complete daily personal-mission work",
+    "Read every day",
+    "Finish school/work responsibilities before entertainment",
+    "Keep your room / workspace organized",
+    "Prepare for the next day",
+    "Complete one difficult task you're avoiding",
+  ]},
+  { group: "Integrity", rules: [
+    "No lying about progress or proof",
+    "No faked or edited proof — automatic elimination",
+  ]},
+];
+
+const CHALLENGE_DAYS = {
+  10: { name: "The Gauntlet", desc: "1-mile run, no walking allowed. Then 25 pull-ups, 50 push-ups, 100 air squats." },
+  20: { name: "Half Murph", desc: "Unweighted: 1-mile run, 100 pull-ups, 200 push-ups, 300 squats, 1-mile run." },
+  30: { name: "Final Crucible", desc: "Full weighted Murph (20 lb vest): 1-mile run, 100 pull-ups, 200 push-ups, 300 squats, 1-mile run — plus mission work, reading, and the full daily standard." },
+  35: { name: "Overtime Final", desc: "Full weighted Murph, again. No eliminated participant may re-enter. Result is final." },
+};
+
+const DAILY_TEMPLATE = [
+  { id:1, group:"Phone", text:"No social media / short-form scrolling" },
+  { id:2, group:"Phone", text:"No phone in bed" },
+  { id:3, group:"Phone", text:"No recreational phone — first 90 min awake" },
+  { id:4, group:"Phone", text:"No recreational phone — last 90 min before sleep" },
+  { id:5, group:"Body", text:"Woke up on first alarm" },
+  { id:6, group:"Body", text:"Completed scheduled training" },
+  { id:7, group:"Body", text:"Outdoor movement" },
+  { id:8, group:"Body", text:"Cold shower" },
+  { id:9, group:"Fuel", text:"Whole foods only, water/milk only" },
+  { id:10, group:"Mind", text:"Mission work logged" },
+  { id:11, group:"Mind", text:"Read" },
+  { id:12, group:"Mind", text:"Room + prep for tomorrow, faced one avoided task" },
+];
+function freshChecklist(){ return DAILY_TEMPLATE.map(i=>({...i, done:false})); }
+
+function scoreOf(p){
+  return p.compliance*0.35 + p.missionProgress*0.30 + (p.status==="active"?80:20)*0.20 + p.leadership*0.10 + 90*0.05;
+}
+
+/* ---------------------------- ICONS ---------------------------- */
+const Icon = ({d, size=20, strokeWidth=1.8, style}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style}>
+    <path d={d} />
+  </svg>
+);
+const ICONS = {
+  dash: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+  check: "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11",
+  users: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75",
+  trophy: "M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4zM3 6h4v3a3 3 0 01-4-3zm18 0h-4v3a3 3 0 004-3z",
+  target: "M12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0M12 12m-7 0a7 7 0 1014 0 7 7 0 10-14 0M12 12m-10 0a10 10 0 1020 0 10 10 0 10-20 0",
+  camera: "M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2v11zM12 17a4 4 0 100-8 4 4 0 000 8z",
+  flame: "M8.5 14.5A2.5 2.5 0 0011 17a2.5 2.5 0 002.5-2.5c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z",
+  shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  gear: "M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.14.36.5.99 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z",
+  clock: "M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2",
+  arrowLeft: "M19 12H5m0 0l7 7m-7-7l7-7",
+  medal: "M12 15a5 5 0 100-10 5 5 0 000 10zM8.21 13.89L7 23l5-3 5 3-1.21-9.12",
+};
+
+/* ---------------------------- SHARED UI ---------------------------- */
+
+function TopBar({title, onBack, right}){
+  return (
+    <div className="topbar" style={{display:"flex", alignItems:"center", justifyContent:"space-between"}}>
+      <div style={{display:"flex", alignItems:"center", gap:12}}>
+        {onBack && <button className="btn-ghost" onClick={onBack} style={{padding:4}}><Icon d={ICONS.arrowLeft} size={20}/></button>}
+        <div className="eyebrow">{title}</div>
+      </div>
+      {right}
+    </div>
+  );
+}
+function Screen({children}){ return <div className="fade-in" style={{padding:"20px"}}>{children}</div>; }
+function HeatBar({pct, height}){
+  return (
+    <div className="heat-bar-track" style={height?{height}:{}}>
+      <div className="heat-bar-fill" style={{width:`${Math.max(0,Math.min(100,pct))}%`}}/>
+    </div>
+  );
+}
+function StatBlock({label, value, accent}){
+  return (
+    <div>
+      <div className="eyebrow" style={{marginBottom:4}}>{label}</div>
+      <div className="display" style={{fontSize:34, lineHeight:1, color: accent || "var(--bone)"}}>{value}</div>
+    </div>
+  );
+}
+
+/* ---------------------------- LANDING / ONBOARDING ---------------------------- */
+
+function Landing({onCreate, onJoin}){
+  return (
+    <Screen>
+      <div style={{minHeight:"78vh", display:"flex", flexDirection:"column", justifyContent:"center", gap:28}}>
+        <div>
+          <div className="eyebrow flicker" style={{color:"var(--ember)", marginBottom:14}}>FORGED PRESENTS</div>
+          <div className="display" style={{fontSize:64, lineHeight:0.92, marginBottom:6}}>CRUCIBLE</div>
+          <div style={{color:"var(--slag)", fontSize:16, lineHeight:1.5, maxWidth:360}}>
+            30 days. One standard. No resets. A competitive discipline challenge for people who don't need another habit tracker.
+          </div>
+        </div>
+        <div className="card" style={{padding:20}}>
+          <div style={{display:"flex", justifyContent:"space-between", marginBottom:16}}>
+            <StatBlock label="Duration" value="30–100" />
+            <StatBlock label="Group Size" value="5–15" />
+            <StatBlock label="Resets" value="0" accent="var(--ember)"/>
+          </div>
+          <div style={{fontSize:13, color:"var(--slag)", lineHeight:1.6}}>
+            One broken standard — an intentional one — ends your run. Illness, injury, and real emergencies don't count against you. Everything else does.
+          </div>
+        </div>
+        <div style={{display:"flex", flexDirection:"column", gap:10}}>
+          <button className="btn btn-primary" onClick={onCreate}>ENTER THE CRUCIBLE — CREATE</button>
+          <button className="btn btn-outline" onClick={onJoin}>JOIN WITH INVITE CODE</button>
+        </div>
+        {!hasRealStorage && (
+          <div style={{fontSize:11, color:"var(--slag-dark)", textAlign:"center"}} className="mono">
+            {hasLocalStorage ? "SAVED TO THIS BROWSER ONLY — NOT SYNCED ACROSS DEVICES YET" : "NO STORAGE DETECTED — PROGRESS WON'T SAVE"}
+          </div>
+        )}
+      </div>
+    </Screen>
+  );
+}
+
+function CreateChallenge({onBack, onCreate}){
+  const [yourName, setYourName] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [days, setDays] = useState(30);
+  const [rosterNames, setRosterNames] = useState([]);
+  const [nameDraft, setNameDraft] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const addName = () => {
+    const n = nameDraft.trim();
+    if(!n) return;
+    if(rosterNames.some(x=>x.toLowerCase()===n.toLowerCase())){ setNameDraft(""); return; }
+    setRosterNames([...rosterNames, n]);
+    setNameDraft("");
+  };
+  const removeName = (n) => setRosterNames(rosterNames.filter(x=>x!==n));
+
+  const submit = async () => {
+    if(!yourName.trim()){ setError("Enter your name — you're the first Survivor."); return; }
+    setError(""); setSubmitting(true);
+    await onCreate({ yourName, groupName, days, rosterNames });
+    setSubmitting(false);
+  };
+
+  const totalCount = 1 + rosterNames.filter(n=>n.trim().toLowerCase()!==yourName.trim().toLowerCase()).length;
+
+  return (
+    <div>
+      <TopBar title="Create Challenge" onBack={onBack}/>
+      <Screen>
+        <div style={{display:"flex", flexDirection:"column", gap:20}}>
+          <div>
+            <label className="field-label">Your Name</label>
+            <input type="text" placeholder="e.g. Marcus Webb" value={yourName} onChange={e=>setYourName(e.target.value)} />
+          </div>
+          <div>
+            <label className="field-label">Group Name</label>
+            <input type="text" placeholder="e.g. The Foundry" value={groupName} onChange={e=>setGroupName(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="field-label">Duration — Days</label>
+            <div style={{display:"flex", gap:10, alignItems:"center"}}>
+              <input type="range" min="7" max="180" step="1" value={days} onChange={e=>setDays(Number(e.target.value))} style={{flex:1, accentColor:"var(--ember)"}}/>
+              <input type="number" min="7" max="365" value={days} onChange={e=>setDays(Math.max(1, Number(e.target.value)||1))} style={{width:76, textAlign:"center", padding:"10px 6px"}}/>
+            </div>
+            <div style={{fontSize:11, color:"var(--slag-dark)", marginTop:4}} className="mono">Not locked to 30 — set it to whatever the group agrees on.</div>
+          </div>
+
+          <div>
+            <label className="field-label">Who's In It — {totalCount} {totalCount===1?"person":"people"}</label>
+            <div style={{display:"flex", gap:8, marginBottom:10}}>
+              <input type="text" placeholder="Add a name and hit enter" value={nameDraft}
+                onChange={e=>setNameDraft(e.target.value)}
+                onKeyDown={e=>{ if(e.key==="Enter"){ e.preventDefault(); addName(); } }} />
+              <button className="btn btn-outline" style={{padding:"0 18px"}} onClick={addName}>ADD</button>
+            </div>
+            <div className="card" style={{padding: rosterNames.length ? 10 : 16}}>
+              <div style={{display:"flex", alignItems:"center", gap:12, padding:"6px 4px"}}>
+                <div className="avatar" style={{width:28, height:28, fontSize:11}}>{initials(yourName||"?")}</div>
+                <div style={{flex:1, fontSize:13, fontWeight:600}}>{yourName.trim() || "You"} <span className="mono" style={{fontSize:10, color:"var(--brass)"}}>· ADMIN</span></div>
+              </div>
+              {rosterNames.length===0 && (
+                <div style={{fontSize:12, color:"var(--slag-dark)", padding:"10px 4px 4px"}}>No one else added yet — you can also just send the invite code out instead.</div>
+              )}
+              {rosterNames.map(n=>(
+                <div key={n} style={{display:"flex", alignItems:"center", gap:12, padding:"6px 4px", borderTop:"1px solid var(--steel)"}}>
+                  <div className="avatar" style={{width:28, height:28, fontSize:11}}>{initials(n)}</div>
+                  <div style={{flex:1, fontSize:13}}>{n}</div>
+                  <button className="btn-ghost" style={{padding:2}} onClick={()=>removeName(n)}><Icon d={ICONS.arrowLeft} size={14} style={{transform:"rotate(45deg)"}}/></button>
+                </div>
+              ))}
+            </div>
+            <div style={{fontSize:11, color:"var(--slag-dark)", marginTop:6}} className="mono">
+              Everyone you add here still confirms their own spot by opening the app and entering their name — this just pre-loads the roster.
+            </div>
+          </div>
+
+          <div className="card" style={{padding:16}}>
+            <div className="eyebrow" style={{marginBottom:8}}>Overtime Rule</div>
+            <div style={{fontSize:13, color:"var(--slag)", lineHeight:1.6}}>
+              If survivors can't agree on a result at day {days}, all remaining participants may unanimously vote one 5-day extension. No eliminated participant may re-enter.
+            </div>
+          </div>
+          {error && <div className="error-text">{error}</div>}
+          <button className="btn btn-primary" onClick={submit} disabled={submitting}>{submitting ? "FORGING..." : "FORGE THE CHALLENGE"}</button>
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+function JoinChallenge({onBack, onJoin}){
+  const [code, setCode] = useState("");
+  const [yourName, setYourName] = useState("");
+  const [mission, setMission] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const submit = async () => {
+    if(!code.trim()){ setError("Enter the invite code your group creator sent you."); return; }
+    if(!yourName.trim()){ setError("Enter your name."); return; }
+    setError(""); setSubmitting(true);
+    const res = await onJoin({ code, yourName, mission });
+    setSubmitting(false);
+    if(res && res.error) setError(res.error);
+  };
+
+  return (
+    <div>
+      <TopBar title="Join Challenge" onBack={onBack}/>
+      <Screen>
+        <div style={{display:"flex", flexDirection:"column", gap:20}}>
+          <div>
+            <label className="field-label">Invite Code</label>
+            <input type="text" placeholder="e.g. FORGE-7X2K" value={code} onChange={e=>setCode(e.target.value.toUpperCase())} />
+          </div>
+          <div>
+            <label className="field-label">Your Name</label>
+            <input type="text" placeholder="e.g. Sasha Kim" value={yourName} onChange={e=>setYourName(e.target.value)} />
+          </div>
+          <div>
+            <label className="field-label">Your 30-Day Mission (optional — can set later)</label>
+            <input type="text" placeholder="e.g. Finish my portfolio" value={mission} onChange={e=>setMission(e.target.value)} />
+          </div>
+          {error && <div className="error-text">{error}</div>}
+          <button className="btn btn-primary" onClick={submit} disabled={submitting}>{submitting ? "JOINING..." : "CONFIRM & ENTER"}</button>
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- DASHBOARD ---------------------------- */
+
+function Dashboard({challenge, participants, day, checklist, nav, me, audit}){
+  const active = participants.filter(p=>p.status==="active");
+  const doneCount = checklist.filter(c=>c.done).length;
+  const pct = Math.round((doneCount/checklist.length)*100);
+  const isChallengeDay = !!CHALLENGE_DAYS[day];
+
+  return (
+    <div>
+      <div className="topbar" style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+        <div className="eyebrow" style={{color:"var(--ember)"}}>{(challenge.name || "THE FOUNDRY").toUpperCase()}</div>
+        <div className="pill pill-active"><span className="status-dot" style={{background:"var(--temper)"}}/>{active.length} SURVIVORS</div>
+      </div>
+
+      <Screen>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:18}}>
+          <div>
+            <div className="eyebrow" style={{marginBottom:4}}>Day</div>
+            <div className="display" style={{fontSize:56, lineHeight:0.9}}>{day}<span style={{color:"var(--slag)", fontSize:28}}> / {challenge.totalDays}</span></div>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <div className="eyebrow" style={{marginBottom:4}}>Invite Code</div>
+            <div className="invite-code">{challenge.inviteCode}</div>
+          </div>
+        </div>
+
+        <HeatBar pct={(day/challenge.totalDays)*100} height={8}/>
+
+        {isChallengeDay && (
+          <button onClick={()=>nav("challengeDay")} className="card" style={{width:"100%", textAlign:"left", marginTop:20, padding:18, border:"1px solid var(--ember)", background:"linear-gradient(180deg, rgba(255,69,23,0.08), transparent)"}}>
+            <div className="eyebrow flicker" style={{color:"var(--ember)", marginBottom:6}}>CHALLENGE DAY — LIVE</div>
+            <div className="display" style={{fontSize:26}}>{CHALLENGE_DAYS[day].name.toUpperCase()}</div>
+            <div style={{fontSize:13, color:"var(--slag)", marginTop:4}}>Tap to view the standard for today →</div>
+          </button>
+        )}
+
+        {audit && audit.status==="pending" && audit.selectedId===me.id && (
+          <div className="card" style={{marginTop:20, padding:16, borderColor:"var(--ember)"}}>
+            <div className="eyebrow flicker" style={{color:"var(--ember)", marginBottom:6}}>YOU'RE TODAY'S AUDIT</div>
+            <div style={{fontSize:13, color:"var(--slag)"}}>Submit your proof in the Vault before the window closes.</div>
+          </div>
+        )}
+
+        <div style={{marginTop:24}}>
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10}}>
+            <div className="eyebrow">Today's Standard</div>
+            <div className="mono" style={{fontSize:12, color:"var(--slag)"}}>{doneCount}/{checklist.length}</div>
+          </div>
+          <HeatBar pct={pct}/>
+          <button onClick={()=>nav("checklist")} className="btn btn-outline" style={{width:"100%", marginTop:14}}>OPEN DAILY CHECKLIST</button>
+        </div>
+
+        <div style={{marginTop:28, display:"grid", gridTemplateColumns:"1fr 1fr", gap:12}}>
+          <button onClick={()=>nav("mission")} className="card" style={{padding:16, textAlign:"left"}}>
+            <Icon d={ICONS.target} size={18} strokeWidth={1.6}/>
+            <div className="eyebrow" style={{marginTop:10, marginBottom:4}}>Mission</div>
+            <div style={{fontSize:13, color:"var(--slag)"}}>{me.missionProgress}% complete</div>
+          </button>
+          <button onClick={()=>nav("vault")} className="card" style={{padding:16, textAlign:"left"}}>
+            <Icon d={ICONS.camera} size={18} strokeWidth={1.6}/>
+            <div className="eyebrow" style={{marginTop:10, marginBottom:4}}>Proof Vault</div>
+            <div style={{fontSize:13, color:"var(--slag)"}}>Log today's proof</div>
+          </button>
+          <button onClick={()=>nav("roster")} className="card" style={{padding:16, textAlign:"left"}}>
+            <Icon d={ICONS.users} size={18} strokeWidth={1.6}/>
+            <div className="eyebrow" style={{marginTop:10, marginBottom:4}}>Roster</div>
+            <div style={{fontSize:13, color:"var(--slag)"}}>{active.length} active · {participants.length-active.length} out</div>
+          </button>
+          {me.isAdmin ? (
+            <button onClick={()=>nav("audit")} className="card" style={{padding:16, textAlign:"left", borderColor:"var(--ember-dim)"}}>
+              <Icon d={ICONS.shield} size={18} strokeWidth={1.6} style={{color:"var(--ember)"}}/>
+              <div className="eyebrow" style={{marginTop:10, marginBottom:4, color:"var(--ember)"}}>Run Audit</div>
+              <div style={{fontSize:13, color:"var(--slag)"}}>{audit ? "Today's audit drawn" : "Not run yet today"}</div>
+            </button>
+          ) : (
+            <div className="card" style={{padding:16}}>
+              <Icon d={ICONS.shield} size={18} strokeWidth={1.6}/>
+              <div className="eyebrow" style={{marginTop:10, marginBottom:4}}>Today's Audit</div>
+              <div style={{fontSize:13, color:"var(--slag)"}}>{audit ? (audit.selectedId===me.id ? "You were pulled" : "Not you today") : "Not run yet"}</div>
+            </div>
+          )}
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- CHECKLIST ---------------------------- */
+
+function Checklist({checklist, onToggle, onBack}){
+  const grouped = {};
+  checklist.forEach(c=>{ (grouped[c.group] = grouped[c.group]||[]).push(c); });
+  const doneCount = checklist.filter(c=>c.done).length;
+  return (
+    <div>
+      <TopBar title="Daily Standard" onBack={onBack} right={<div className="mono" style={{fontSize:13, color:"var(--slag)"}}>{doneCount}/{checklist.length}</div>}/>
+      <Screen>
+        {Object.entries(grouped).map(([group, items])=>(
+          <div key={group} style={{marginBottom:18}}>
+            <div className="eyebrow" style={{marginBottom:4, color:"var(--ember)"}}>{group}</div>
+            {items.map(item=>(
+              <div className="checklist-row" key={item.id}>
+                <button className={`checkbox ${item.done?"checked":""}`} onClick={()=>onToggle(item.id)}>
+                  {item.done && <Icon d={ICONS.check} size={13} strokeWidth={3}/>}
+                </button>
+                <div style={{fontSize:15, color: item.done ? "var(--slag)" : "var(--bone)", textDecoration: item.done ? "line-through" : "none", lineHeight:1.4}}>{item.text}</div>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div className="card" style={{padding:16, marginTop:8, borderColor:"var(--temper)"}}>
+          <div style={{fontSize:13, color:"var(--slag)", lineHeight:1.6}}>
+            Illness, injury, family emergency, or unsafe conditions are valid exceptions — flag it with your admin instead of grinding through it.
+          </div>
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- MISSION ---------------------------- */
+
+function Mission({me, proof, onSetMission, onLogProgress, onBack}){
+  const [missionInput, setMissionInput] = useState(me.mission || "");
+  const [log, setLog] = useState("");
+  const [bump, setBump] = useState(10);
+  const entries = proof.filter(p=>p.type==="Mission");
+
+  if(!me.mission){
+    return (
+      <div>
+        <TopBar title="Personal Mission" onBack={onBack}/>
+        <Screen>
+          <div style={{fontSize:13, color:"var(--slag)", marginBottom:16, lineHeight:1.6}}>
+            Before Day 1 standards really count, lock in the one goal you're pushing for the whole run.
+          </div>
+          <label className="field-label">Your Mission</label>
+          <input type="text" placeholder="e.g. Launch my Etsy shop" value={missionInput} onChange={e=>setMissionInput(e.target.value)} />
+          <button className="btn btn-primary" style={{width:"100%", marginTop:14}} onClick={()=>missionInput.trim() && onSetMission(missionInput)}>LOCK IN MISSION</button>
+        </Screen>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <TopBar title="Personal Mission" onBack={onBack}/>
+      <Screen>
+        <div className="eyebrow" style={{marginBottom:8}}>Your goal</div>
+        <div className="display" style={{fontSize:26, marginBottom:16, lineHeight:1.05}}>{me.mission}</div>
+        <div style={{display:"flex", justifyContent:"space-between", marginBottom:6}}>
+          <div className="eyebrow">Progress</div>
+          <div className="mono" style={{fontSize:12, color:"var(--ember)"}}>{me.missionProgress}%</div>
+        </div>
+        <HeatBar pct={me.missionProgress}/>
+
+        <div style={{marginTop:24}}>
+          <label className="field-label">Log today's progress</label>
+          <textarea rows={3} placeholder="What did you move forward today?" value={log} onChange={e=>setLog(e.target.value)}/>
+          <div style={{display:"flex", alignItems:"center", gap:10, marginTop:10}}>
+            <span className="mono" style={{fontSize:12, color:"var(--slag)"}}>+</span>
+            <input type="number" min="0" max="100" value={bump} onChange={e=>setBump(Number(e.target.value))} style={{width:70}}/>
+            <span className="mono" style={{fontSize:12, color:"var(--slag)"}}>%</span>
+          </div>
+          <button className="btn btn-primary" style={{width:"100%", marginTop:10}} onClick={()=>{ if(log.trim()){ onLogProgress(log, bump); setLog(""); } }}>LOG PROGRESS</button>
+        </div>
+
+        <div style={{marginTop:28}}>
+          <div className="eyebrow" style={{marginBottom:12}}>History</div>
+          {entries.length===0 && <div style={{fontSize:13, color:"var(--slag-dark)"}}>Nothing logged yet.</div>}
+          {entries.map((e,i)=>(
+            <div key={i} style={{display:"flex", gap:14, paddingBottom:16, marginBottom:16, borderBottom: i<entries.length-1 ? "1px solid var(--steel)" : "none"}}>
+              <div className="mono" style={{fontSize:12, color:"var(--slag)", width:44, flexShrink:0}}>D{e.day}</div>
+              <div style={{fontSize:14, lineHeight:1.5}}>{e.note}</div>
+            </div>
+          ))}
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- PROOF VAULT ---------------------------- */
+
+function Vault({proof, onAdd, onBack}){
+  const typeIcon = {Workout: ICONS.flame, Meal: ICONS.camera, Mission: ICONS.target, "Screen Time": ICONS.clock};
+  const [type, setType] = useState("Workout");
+  const [note, setNote] = useState("");
+  const [showForm, setShowForm] = useState(false);
+
+  const submit = () => {
+    if(!note.trim()) return;
+    onAdd({type, note});
+    setNote(""); setShowForm(false);
+  };
+
+  return (
+    <div>
+      <TopBar title="Proof Vault" onBack={onBack}/>
+      <Screen>
+        <div style={{fontSize:13, color:"var(--slag)", marginBottom:20, lineHeight:1.6}}>
+          Every day you collect proof. You don't submit all of it publicly — only what's requested during a random audit.
+        </div>
+
+        {showForm && (
+          <div className="card fade-in" style={{padding:16, marginBottom:16}}>
+            <label className="field-label">Type</label>
+            <select value={type} onChange={e=>setType(e.target.value)} style={{marginBottom:12}}>
+              <option>Workout</option><option>Meal</option><option>Mission</option><option>Screen Time</option>
+            </select>
+            <label className="field-label">Note</label>
+            <textarea rows={2} placeholder="What's the proof?" value={note} onChange={e=>setNote(e.target.value)} />
+            <button className="btn btn-primary" style={{width:"100%", marginTop:10}} onClick={submit}>SAVE ENTRY</button>
+          </div>
+        )}
+
+        {proof.length===0 && !showForm && <div style={{fontSize:13, color:"var(--slag-dark)", marginBottom:16}}>No proof logged yet.</div>}
+
+        {proof.map((p,i)=>(
+          <div key={i} className="card" style={{padding:16, marginBottom:12, display:"flex", gap:14, alignItems:"center"}}>
+            <div style={{width:40, height:40, background:"var(--iron)", border:"1px solid var(--steel-light)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, color:"var(--ember)"}}>
+              <Icon d={typeIcon[p.type] || ICONS.camera} size={18} strokeWidth={1.6}/>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div style={{fontWeight:700, fontSize:14}}>{p.type}</div>
+                <div className="mono" style={{fontSize:11, color:"var(--slag)"}}>DAY {p.day}</div>
+              </div>
+              <div style={{fontSize:13, color:"var(--slag)", marginTop:2}}>{p.note}</div>
+            </div>
+          </div>
+        ))}
+        {!showForm && <button className="btn btn-outline" style={{width:"100%", marginTop:8}} onClick={()=>setShowForm(true)}>+ ADD PROOF ENTRY</button>}
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- AUDIT ---------------------------- */
+
+function AuditDraw({participants, onBack, onDraw, onGoReview, existingAudit}){
+  const [spinning, setSpinning] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(
+    existingAudit ? participants.find(p=>p.id===existingAudit.selectedId) : null
+  );
+
+  const runDraw = () => {
+    setSpinning(true);
+    setSelectedParticipant(null);
+    setTimeout(async ()=>{
+      const picked = await onDraw();
+      setSpinning(false);
+      setSelectedParticipant(picked);
+    }, 1900);
+  };
+
+  return (
+    <div>
+      <TopBar title="Random Audit" onBack={onBack}/>
+      <Screen>
+        <div style={{minHeight:"60vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:28}}>
+          <div style={{
+              width:220, height:220, borderRadius:"50%",
+              border:"3px solid var(--steel-light)",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              position:"relative",
+              background:"conic-gradient(from 0deg, var(--iron), var(--steel), var(--iron), var(--steel), var(--iron))",
+              animation: spinning ? "spin 1.9s cubic-bezier(.2,.8,.3,1) forwards" : "none",
+              boxShadow: selectedParticipant ? "0 0 40px var(--ember-glow)" : "none",
+              transition:"box-shadow .4s ease"
+            }}>
+            <div style={{width:180, height:180, borderRadius:"50%", background:"var(--void)", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
+              {!spinning && !selectedParticipant && <Icon d={ICONS.shield} size={40} strokeWidth={1.3}/>}
+              {spinning && <div className="mono eyebrow" style={{color:"var(--ember)"}}>SELECTING</div>}
+              {selectedParticipant && (
+                <div style={{textAlign:"center"}}>
+                  <div className="eyebrow" style={{color:"var(--ember)", marginBottom:6}}>AUDIT SELECTED</div>
+                  <div className="display" style={{fontSize:26}}>{selectedParticipant.name.split(" ")[0].toUpperCase()}</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {!spinning && !selectedParticipant && (
+            <button className="btn btn-primary" onClick={runDraw}>DRAW TODAY'S AUDIT</button>
+          )}
+          {selectedParticipant && (
+            <div style={{width:"100%", display:"flex", flexDirection:"column", gap:10}}>
+              <div className="card" style={{padding:16, textAlign:"center"}}>
+                <div style={{fontSize:13, color:"var(--slag)"}}>Selected participant must submit proof within</div>
+                <div className="display mono" style={{fontSize:28, color:"var(--ember)", marginTop:4}}>2:00:00</div>
+              </div>
+              <button className="btn btn-primary" onClick={()=>onGoReview(selectedParticipant)}>VIEW ADMIN REVIEW →</button>
+            </div>
+          )}
+          {!selectedParticipant && !spinning && (
+            <div style={{fontSize:12, color:"var(--slag)", textAlign:"center", maxWidth:280}}>
+              Everyone stays eligible every day — the same person can be pulled multiple days running.
+            </div>
+          )}
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+function AdminReview({selected, onBack, onResolved}){
+  const [decision, setDecision] = useState(null);
+  const proofs = [
+    {type:"Screen Time", note:"Ask them to show their screen-time screenshot here."},
+    {type:"Workout Video", note:"Ask for today's workout clip, timestamp visible."},
+    {type:"Meal Photo", note:"Ask for today's whole-food meal photos."},
+  ];
+  if(!selected) return null;
+  return (
+    <div>
+      <TopBar title="Admin Review" onBack={onBack}/>
+      <Screen>
+        <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:20}}>
+          <div className="avatar">{selected.initials}</div>
+          <div>
+            <div style={{fontWeight:700}}>{selected.name}</div>
+            <div className="mono" style={{fontSize:11, color:"var(--slag)"}}>PULLED FOR AUDIT</div>
+          </div>
+        </div>
+
+        {proofs.map((p,i)=>(
+          <div key={i} className="card" style={{padding:16, marginBottom:12}}>
+            <div className="eyebrow" style={{marginBottom:6, color:"var(--ember)"}}>{p.type}</div>
+            <div style={{height:120, background:"var(--iron)", border:"1px dashed var(--steel-light)", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:10, color:"var(--slag-dark)"}}>
+              <Icon d={ICONS.camera} size={26} strokeWidth={1.3}/>
+            </div>
+            <div style={{fontSize:13, color:"var(--slag)"}}>{p.note}</div>
+          </div>
+        ))}
+
+        {!decision ? (
+          <div style={{display:"flex", flexDirection:"column", gap:10, marginTop:8}}>
+            <button className="btn btn-primary" onClick={()=>setDecision("pass")}>PASS</button>
+            <button className="btn btn-outline" onClick={()=>setDecision("exception")}>VALID EXCEPTION</button>
+            <button className="btn" style={{background:"var(--ember-dim)", color:"var(--bone)"}} onClick={()=>setDecision("eliminated")}>ELIMINATED</button>
+          </div>
+        ) : (
+          <div className="card fade-in" style={{padding:18, textAlign:"center", marginTop:8}}>
+            <div className="eyebrow" style={{marginBottom:8, color: decision==="eliminated" ? "var(--ember)" : "var(--temper)"}}>
+              {decision==="pass" && "RULING: PASS"}
+              {decision==="exception" && "RULING: VALID EXCEPTION"}
+              {decision==="eliminated" && "RULING: ELIMINATED"}
+            </div>
+            <div style={{fontSize:13, color:"var(--slag)", marginBottom:16}}>
+              {decision==="eliminated" ? `${selected.name} is removed from active standing. They remain on the roster, marked eliminated.` : `${selected.name} continues in the Crucible.`}
+            </div>
+            <button className="btn btn-primary" style={{width:"100%"}} onClick={()=>onResolved(decision)}>CONFIRM & CLOSE</button>
+          </div>
+        )}
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- ROSTER ---------------------------- */
+
+function Roster({participants, onBack}){
+  const active = participants.filter(p=>p.status==="active");
+  const eliminated = participants.filter(p=>p.status==="eliminated");
+  return (
+    <div>
+      <TopBar title="Roster" onBack={onBack}/>
+      <Screen>
+        <div style={{display:"flex", gap:24, marginBottom:24}}>
+          <StatBlock label="Started" value={participants.length}/>
+          <StatBlock label="Remain" value={active.length} accent="var(--temper)"/>
+          <StatBlock label="Eliminated" value={eliminated.length} accent="var(--ember)"/>
+        </div>
+
+        <div className="eyebrow" style={{marginBottom:10}}>Active</div>
+        {active.length===0 && <div style={{fontSize:13, color:"var(--slag-dark)", marginBottom:16}}>No one active yet — share your invite code.</div>}
+        {active.map(p=>(
+          <div key={p.id} className="card" style={{padding:14, marginBottom:8, display:"flex", alignItems:"center", gap:12}}>
+            <div className="avatar">{p.initials}</div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div style={{fontWeight:700, fontSize:14}}>{p.name}{p.isAdmin && <span className="mono" style={{fontSize:10, color:"var(--brass)"}}> · ADMIN</span>}</div>
+                <div className="mono" style={{fontSize:12, color: p.claimed ? "var(--temper)" : "var(--slag-dark)"}}>{p.claimed ? `${p.compliance}%` : "PENDING"}</div>
+              </div>
+              <div style={{fontSize:12, color:"var(--slag)", marginTop:2}}>{p.claimed ? (p.mission || "No mission set yet") : "Hasn't opened the app yet"}</div>
+            </div>
+          </div>
+        ))}
+
+        {eliminated.length>0 && (
+          <React.Fragment>
+            <div className="eyebrow" style={{margin:"20px 0 10px", color:"var(--ember)"}}>Eliminated</div>
+            {eliminated.map(p=>(
+              <div key={p.id} className="card" style={{padding:14, marginBottom:8, display:"flex", alignItems:"center", gap:12, opacity:0.75}}>
+                <div className="avatar" style={{filter:"grayscale(1)"}}>{p.initials}</div>
+                <div style={{flex:1}}>
+                  <div className="seared" style={{fontWeight:700, fontSize:14, display:"inline-block"}}>{p.name}</div>
+                  <div style={{fontSize:12, color:"var(--slag-dark)", marginTop:4}}>Day {p.eliminatedDay} · {p.eliminatedReason}</div>
+                </div>
+              </div>
+            ))}
+          </React.Fragment>
+        )}
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- LEADERBOARD ---------------------------- */
+
+function Leaderboard({participants, onBack}){
+  const ranked = [...participants].filter(p=>p.status==="active").sort((a,b)=>scoreOf(b)-scoreOf(a));
+  return (
+    <div>
+      <TopBar title="Leaderboard" onBack={onBack}/>
+      <Screen>
+        <div className="card" style={{padding:14, marginBottom:20}}>
+          <div className="eyebrow" style={{marginBottom:8}}>Scoring</div>
+          <div style={{fontSize:12, color:"var(--slag)", lineHeight:1.8}} className="mono">
+            35% Consistency · 30% Mission · 20% Challenge Days · 10% Leadership · 5% Reflection
+          </div>
+        </div>
+        {ranked.length===0 && <div style={{fontSize:13, color:"var(--slag-dark)"}}>No active survivors yet.</div>}
+        {ranked.map((p,i)=>(
+          <div key={p.id} className="card" style={{padding:14, marginBottom:8, display:"flex", alignItems:"center", gap:14}}>
+            <div className="display" style={{fontSize:26, width:34, color: i<3 ? "var(--brass)" : "var(--slag)"}}>{i+1}</div>
+            <div className="avatar">{p.initials}</div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:700, fontSize:14}}>{p.name}</div>
+              <div style={{fontSize:12, color:"var(--slag)"}}>{p.compliance}% compliance · {p.missionProgress}% mission</div>
+            </div>
+            <div className="display mono" style={{fontSize:20}}>{scoreOf(p).toFixed(1)}</div>
+          </div>
+        ))}
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- CHALLENGE DAY ---------------------------- */
+
+function ChallengeDayScreen({day, onBack}){
+  const info = CHALLENGE_DAYS[day] || CHALLENGE_DAYS[30];
+  return (
+    <div>
+      <TopBar title={`Day ${day} Standard`} onBack={onBack}/>
+      <Screen>
+        <div className="eyebrow flicker" style={{color:"var(--ember)", marginBottom:8}}>CHALLENGE DAY</div>
+        <div className="display" style={{fontSize:44, lineHeight:0.95, marginBottom:20}}>{info.name.toUpperCase()}</div>
+        <div className="card" style={{padding:20, marginBottom:20}}>
+          <div className="eyebrow" style={{marginBottom:10}}>The Standard</div>
+          <div style={{fontSize:15, lineHeight:1.7}}>{info.desc}</div>
+        </div>
+        <div className="card" style={{padding:20, marginBottom:20, borderColor:"var(--temper)"}}>
+          <div className="eyebrow" style={{marginBottom:10, color:"var(--temper)"}}>Non-Negotiable</div>
+          <div style={{fontSize:13, color:"var(--slag)", lineHeight:1.7}}>
+            Water, food, rest, and injury-safety rules still apply in full. No reward for restriction, dehydration, sleep deprivation, or training through injury.
+          </div>
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- RULES ---------------------------- */
+
+function RulesScreen({onBack}){
+  return (
+    <div>
+      <TopBar title="Daily Standard — Rules" onBack={onBack}/>
+      <Screen>
+        {RULE_GROUPS.map((g,i)=>(
+          <div key={i} style={{marginBottom:22}}>
+            <div className="eyebrow" style={{marginBottom:10, color:"var(--ember)"}}>{g.group}</div>
+            {g.rules.map((r,j)=>(
+              <div key={j} style={{display:"flex", gap:10, marginBottom:10, fontSize:14, lineHeight:1.5}}>
+                <div style={{color:"var(--slag-dark)"}}>—</div>
+                <div>{r}</div>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div className="card" style={{padding:16, borderColor:"var(--temper)"}}>
+          <div className="eyebrow" style={{marginBottom:8, color:"var(--temper)"}}>Valid Exceptions</div>
+          <div style={{fontSize:13, color:"var(--slag)", lineHeight:1.6}}>Illness, injury, family emergencies, unsafe conditions, and unavoidable school obligations don't count as failures.</div>
+        </div>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- PODIUM ---------------------------- */
+
+function Podium({participants, onBack}){
+  const finishers = [...participants].filter(p=>p.status==="active").sort((a,b)=>scoreOf(b)-scoreOf(a));
+  const order = finishers.length>=5 ? [1,0,2] : finishers.length>=3 ? [0,1] : finishers.length>0 ? [0] : [];
+  const heights = [140,180,110];
+  const titles = [
+    {label:"Crucible Champion", who: finishers[0]},
+    {label:"Most Improved", who: finishers[Math.min(3,finishers.length-1)]},
+    {label:"Best Leader", who: [...finishers].sort((a,b)=>b.leadership-a.leadership)[0]},
+    {label:"Iron Discipline", who: [...finishers].sort((a,b)=>b.compliance-a.compliance)[0]},
+  ];
+  return (
+    <div>
+      <TopBar title="Final Results" onBack={onBack}/>
+      <Screen>
+        <div style={{textAlign:"center", marginBottom:28}}>
+          <div className="eyebrow" style={{color:"var(--ember)", marginBottom:6}}>CRUCIBLE COMPLETE</div>
+          <div className="display" style={{fontSize:34}}>{finishers.length} FINISHERS</div>
+        </div>
+
+        {finishers.length>0 ? (
+          <div style={{display:"flex", alignItems:"flex-end", justifyContent:"center", gap:10, marginBottom:32}}>
+            {order.map((idx,pos)=>{
+              const p = finishers[idx]; if(!p) return null;
+              return (
+                <div key={idx} style={{textAlign:"center", width:100}}>
+                  <div className="avatar" style={{margin:"0 auto 8px", width:48, height:48, border: idx===0 ? "2px solid var(--brass)" : "1px solid var(--steel-light)"}}>{p.initials}</div>
+                  <div style={{fontSize:12, fontWeight:700, marginBottom:8}}>{p.name.split(" ")[0]}</div>
+                  <div style={{height:heights[pos], background: idx===0 ? "linear-gradient(180deg, var(--brass), var(--iron))" : "var(--steel)", display:"flex", alignItems:"flex-start", justifyContent:"center", paddingTop:10}}>
+                    <div className="display" style={{fontSize:30}}>{idx+1}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="card" style={{padding:20, textAlign:"center", marginBottom:24}}>No finishers this run — everyone was eliminated. No winner.</div>
+        )}
+
+        <div className="eyebrow" style={{marginBottom:12}}>Achievement Titles</div>
+        {titles.map((t,i)=>t.who && (
+          <div key={i} className="card" style={{padding:14, marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <div className="pill pill-brass"><Icon d={ICONS.medal} size={13}/>{t.label}</div>
+            <div style={{fontWeight:700, fontSize:13}}>{t.who.name}</div>
+          </div>
+        ))}
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- PROFILE ---------------------------- */
+
+function Profile({me, participants, onBack, onSwitch}){
+  const rank = [...participants].filter(p=>p.status==="active").sort((a,b)=>scoreOf(b)-scoreOf(a)).findIndex(p=>p.id===me.id) + 1;
+  return (
+    <div>
+      <TopBar title="Profile" onBack={onBack}/>
+      <Screen>
+        <div style={{display:"flex", alignItems:"center", gap:16, marginBottom:24}}>
+          <div className="avatar" style={{width:60, height:60, fontSize:18}}>{me.initials}</div>
+          <div>
+            <div className="display" style={{fontSize:24}}>{me.name}</div>
+            <div className="mono" style={{fontSize:12, color:"var(--slag)"}}>{me.isAdmin ? "ADMIN" : "PARTICIPANT"}</div>
+          </div>
+        </div>
+        <div style={{display:"flex", gap:24, marginBottom:24}}>
+          <StatBlock label="Compliance" value={`${me.compliance}%`} accent="var(--temper)"/>
+          <StatBlock label="Status" value={me.status==="active"?"IN":"OUT"} accent={me.status==="active"?"var(--temper)":"var(--ember)"}/>
+          <StatBlock label="Rank" value={rank>0?`#${rank}`:"—"} accent="var(--brass)"/>
+        </div>
+        <button className="btn btn-outline" style={{width:"100%"}} onClick={onSwitch}>NOT YOU? SWITCH IDENTITY</button>
+      </Screen>
+    </div>
+  );
+}
+
+/* ---------------------------- LOADING ---------------------------- */
+function Loading(){
+  return (
+    <div style={{minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center"}}>
+      <div className="eyebrow flicker" style={{color:"var(--ember)"}}>LOADING THE CRUCIBLE...</div>
+    </div>
+  );
+}
+
+/* ---------------------------- APP ROOT ---------------------------- */
+
+function App(){
+  const [phase, setPhase] = useState("loading");
+  const [screen, setScreen] = useState("dashboard");
+  const [challenge, setChallenge] = useState(null);
+  const [participants, setParticipants] = useState([]);
+  const [meId, setMeId] = useState(null);
+  const [checklist, setChecklist] = useState(freshChecklist());
+  const [proof, setProof] = useState([]);
+  const [audit, setAudit] = useState(null);
+  const [auditSelected, setAuditSelected] = useState(null);
+
+  useEffect(()=>{ init(); }, []);
+
+  async function init(){
+    const [ch, parts, localMe] = await Promise.all([
+      loadShared(CHALLENGE_KEY, null),
+      loadShared(PARTICIPANTS_KEY, []),
+      loadPersonal(ME_KEY, null),
+    ]);
+    setChallenge(ch);
+    setParticipants(parts);
+    if(localMe && parts.find(p=>p.id===localMe.id)){
+      setMeId(localMe.id);
+      setPhase("app");
+    } else {
+      setPhase("landing");
+    }
+  }
+
+  useEffect(()=>{
+    if(phase!=="app") return;
+    const t = setInterval(async ()=>{
+      const [ch, parts] = await Promise.all([loadShared(CHALLENGE_KEY,null), loadShared(PARTICIPANTS_KEY,[])]);
+      if(ch) setChallenge(ch);
+      setParticipants(parts);
+    }, 8000);
+    return ()=>clearInterval(t);
+  }, [phase]);
+
+  const day = computeDay(challenge);
+
+  useEffect(()=>{
+    if(!meId) return;
+    (async ()=>{
+      const cl = await loadShared(CHECKLIST_KEY_FOR(meId, day), null);
+      setChecklist(cl || freshChecklist());
+      const pf = await loadShared(PROOF_KEY_FOR(meId), []);
+      setProof(pf);
+      const a = await loadShared(AUDIT_KEY_FOR(day), null);
+      setAudit(a);
+    })();
+  }, [meId, day]);
+
+  const nav = (s) => setScreen(s);
+
+  function newParticipant(id, name, mission, isAdmin, claimed){
+    return { id, name: name.trim(), initials: initials(name), status:"active", eliminatedDay:null, eliminatedReason:null, streak:0, compliance:100, mission: (mission||"").trim(), missionProgress:0, leadership:60, isAdmin, claimed, joinedAt: Date.now() };
+  }
+
+  async function handleCreate({yourName, groupName, days, rosterNames}){
+    const adminId = uid();
+    const admin = newParticipant(adminId, yourName, "", true, true);
+    const prefilled = rosterNames
+      .map(n=>n.trim())
+      .filter(n=>n && n.toLowerCase()!==yourName.trim().toLowerCase())
+      .map(n=>newParticipant(uid(), n, "", false, false));
+    const ch = { name: groupName.trim() || "The Foundry", inviteCode: randomCode(), createdAt: Date.now(), totalDays: Number(days) };
+    const allParticipants = [admin, ...prefilled];
+    await saveShared(CHALLENGE_KEY, ch);
+    await saveShared(PARTICIPANTS_KEY, allParticipants);
+    await savePersonal(ME_KEY, {id: adminId});
+    setChallenge(ch); setParticipants(allParticipants); setMeId(adminId); setPhase("app"); setScreen("dashboard");
+  }
+
+  async function handleJoin({code, yourName, mission}){
+    const ch = await loadShared(CHALLENGE_KEY, null);
+    if(!ch || ch.inviteCode.toUpperCase() !== code.trim().toUpperCase()){
+      return {error: "Invite code not found. Double-check with whoever created the Crucible."};
+    }
+    const parts = await loadShared(PARTICIPANTS_KEY, []);
+    const nameLower = yourName.trim().toLowerCase();
+    const unclaimedMatch = parts.find(p=>!p.claimed && p.name.toLowerCase()===nameLower);
+    let updated, myId;
+
+    if(unclaimedMatch){
+      // claim the spot the admin already added for you
+      myId = unclaimedMatch.id;
+      updated = parts.map(p=>p.id===myId ? {...p, claimed:true, mission: mission ? mission.trim() : p.mission} : p);
+    } else {
+      if(parts.find(p=>p.claimed && p.name.toLowerCase()===nameLower)){
+        return {error: "Someone with that name already joined — try a last initial."};
+      }
+      myId = uid();
+      const me = newParticipant(myId, yourName, mission, false, true);
+      updated = [...parts, me];
+    }
+
+    await saveShared(PARTICIPANTS_KEY, updated);
+    await savePersonal(ME_KEY, {id: myId});
+    setChallenge(ch); setParticipants(updated); setMeId(myId); setPhase("app"); setScreen("dashboard");
+    return {ok:true};
+  }
+
+  async function updateParticipant(id, patch){
+    const fresh = await loadShared(PARTICIPANTS_KEY, participants);
+    const updated = fresh.map(p=>p.id===id?{...p,...patch}:p);
+    await saveShared(PARTICIPANTS_KEY, updated);
+    setParticipants(updated);
+    return updated;
+  }
+
+  async function toggleChecklistItem(itemId){
+    const updated = checklist.map(c=>c.id===itemId?{...c,done:!c.done}:c);
+    setChecklist(updated);
+    await saveShared(CHECKLIST_KEY_FOR(meId, day), updated);
+    const doneCount = updated.filter(c=>c.done).length;
+    await updateParticipant(meId, {compliance: Math.round((doneCount/updated.length)*100)});
+  }
+
+  async function addProofEntry(entry){
+    const updated = [{day, ...entry}, ...proof];
+    setProof(updated);
+    await saveShared(PROOF_KEY_FOR(meId), updated);
+  }
+
+  async function setMission(missionText){
+    await updateParticipant(meId, {mission: missionText.trim()});
+  }
+
+  async function logMissionProgress(note, bump){
+    const me = participants.find(p=>p.id===meId);
+    const newPct = Math.max(0, Math.min(100, (me.missionProgress||0) + Number(bump)));
+    await updateParticipant(meId, {missionProgress: newPct});
+    await addProofEntry({type:"Mission", note});
+  }
+
+  async function runAudit(){
+    const fresh = await loadShared(PARTICIPANTS_KEY, participants);
+    const active = fresh.filter(p=>p.status==="active");
+    if(active.length===0) return null;
+    const pick = active[Math.floor(Math.random()*active.length)];
+    const a = { day, selectedId: pick.id, status:"pending", deadline: Date.now()+2*3600*1000 };
+    await saveShared(AUDIT_KEY_FOR(day), a);
+    setAudit(a);
+    setParticipants(fresh);
+    return pick;
+  }
+
+  async function resolveAudit(decision){
+    if(!audit) return;
+    if(decision==="eliminated"){
+      await updateParticipant(audit.selectedId, {status:"eliminated", eliminatedDay: day, eliminatedReason:"Failed random audit — proof did not meet standard"});
+    }
+    const a = {...audit, status:"resolved", decision};
+    await saveShared(AUDIT_KEY_FOR(day), a);
+    setAudit(a);
+    setAuditSelected(null);
+    nav("dashboard");
+  }
+
+  async function switchIdentity(){
+    await savePersonal(ME_KEY, null);
+    setMeId(null); setPhase("landing"); setScreen("dashboard");
+  }
+
+  if(phase==="loading") return <div className="app-shell"><Loading/></div>;
+  if(phase==="landing") return <div className="app-shell"><Landing onCreate={()=>setPhase("create")} onJoin={()=>setPhase("join")}/></div>;
+  if(phase==="create") return <div className="app-shell"><CreateChallenge onBack={()=>setPhase("landing")} onCreate={handleCreate}/></div>;
+  if(phase==="join") return <div className="app-shell"><JoinChallenge onBack={()=>setPhase("landing")} onJoin={handleJoin}/></div>;
+
+  const me = participants.find(p=>p.id===meId);
+  if(!me) return <div className="app-shell"><Loading/></div>;
+
+  const NAV_ITEMS = [
+    {key:"dashboard", label:"Base", icon:ICONS.dash},
+    {key:"checklist", label:"Standard", icon:ICONS.check},
+    {key:"roster", label:"Roster", icon:ICONS.users},
+    {key:"leaderboard", label:"Ranks", icon:ICONS.trophy},
+    {key:"rules", label:"Rules", icon:ICONS.shield},
+    {key:"profile", label:"Profile", icon:ICONS.gear},
+  ];
+
+  let body;
+  if(screen==="dashboard") body = <Dashboard challenge={challenge} participants={participants} day={day} checklist={checklist} nav={nav} me={me} audit={audit}/>;
+  else if(screen==="checklist") body = <Checklist checklist={checklist} onToggle={toggleChecklistItem} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="mission") body = <Mission me={me} proof={proof} onSetMission={setMission} onLogProgress={logMissionProgress} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="vault") body = <Vault proof={proof} onAdd={addProofEntry} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="audit") body = <AuditDraw participants={participants} onBack={()=>nav("dashboard")} onDraw={runAudit} existingAudit={audit} onGoReview={(p)=>{setAuditSelected(p); nav("adminReview");}}/>;
+  else if(screen==="adminReview") body = <AdminReview selected={auditSelected || (audit && participants.find(p=>p.id===audit.selectedId))} onBack={()=>nav("audit")} onResolved={resolveAudit}/>;
+  else if(screen==="roster") body = <Roster participants={participants} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="leaderboard") body = <Leaderboard participants={participants} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="challengeDay") body = <ChallengeDayScreen day={day} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="rules") body = <RulesScreen onBack={()=>nav("dashboard")}/>;
+  else if(screen==="podium") body = <Podium participants={participants} onBack={()=>nav("dashboard")}/>;
+  else if(screen==="profile") body = <Profile me={me} participants={participants} onBack={()=>nav("dashboard")} onSwitch={switchIdentity}/>;
+
+  const mainNavKeys = NAV_ITEMS.map(n=>n.key);
+  const showBottomNav = mainNavKeys.includes(screen);
+
+  return (
+    <div className="app-shell">
+      <div className="main-scroll" style={{paddingBottom: showBottomNav ? 90 : 20}}>
+        {body}
+        {screen==="dashboard" && (
+          <div style={{padding:"0 20px 20px"}}>
+            <button className="btn btn-ghost" style={{width:"100%", textAlign:"center", border:"1px dashed var(--steel)"}} onClick={()=>nav("podium")}>DEMO: VIEW FINAL PODIUM →</button>
+          </div>
+        )}
+      </div>
+      {showBottomNav && (
+        <div className="bottomnav">
+          {NAV_ITEMS.map(item=>(
+            <button key={item.key} className={`nav-tab ${screen===item.key?"active":""}`} onClick={()=>nav(item.key)}>
+              <Icon d={item.icon} size={19} strokeWidth={1.7}/>
+              <span className="tab-label">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
